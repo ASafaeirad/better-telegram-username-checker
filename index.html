@@ -59,6 +59,12 @@
               <pre class="overflow-auto language-json" tabindex="0"><code class="language-json" id="resultContent"></code></pre>
             </div>
           </div>
+          <div id="suggestions" class="hidden mt-8 text-left">
+            <div class="bg-white p-6 rounded-xl shadow-xl">
+              <p class="font-semibold text-lg mb-5">Similar suggestions</p>
+              <div id="similar" class="flex flex-wrap gap-5"></div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -140,6 +146,8 @@ console<span class="token punctuation">.</span><span class="token function">log<
           const loadingIcon = document.getElementById('loadingIcon');
           const resultDiv = document.getElementById('result');
           const resultContent = document.getElementById('resultContent');
+          const similarDiv = document.getElementById('similar');
+          const suggestionDiv = document.getElementById('suggestions');
 
           button.disabled = true;
           loadingIcon.classList.remove('hidden');
@@ -151,7 +159,36 @@ console<span class="token punctuation">.</span><span class="token function">log<
             const data = await res.json();
             resultContent.textContent = JSON.stringify(data, null, 2);
             resultDiv.classList.remove('hidden');
+            suggestionDiv.classList.remove('hidden');
             Prism.highlightElement(resultContent);
+
+            const suggestions = [
+            'the_' + username,
+            'real_' + username,
+            'its_' + username,
+            'thisis_' + username,
+            'dev_' + username,
+            Math.floor(Math.random() * 1000) + '_' + username,
+            username + '_x',
+            username + '_official',
+            username + '_real',
+            username + '_dev',
+            username + '_ai',
+            username + '_' + Math.floor(Math.random() * 1000),
+          ];
+
+          const newUsernames = [];
+          for (const s of suggestions) {
+            if (!data.can_claim) {
+              newUsernames.push(s);
+            }
+          }
+
+          if (!data.can_claim) {
+            similarDiv.innerHTML = newUsernames
+              .map((username) => `<span class="bg-blue-100 rounded p-2">${username}</span>`)
+              .join('');
+          }
           } catch (err) {
             console.error('Validation failed:', err);
           }
